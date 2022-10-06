@@ -1,11 +1,21 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import List from "./List";
 import Alert from "./Alert";
 import "./App.css";
 
+const getLocalStorage = () => {
+  let list = localStorage.getItem("list");
+  if (list) {
+    return (list = JSON.parse(localStorage.getItem("list")));
+  } else {
+    return [];
+  }
+};
+
 function App() {
   const [name, setName] = useState("");
-  const [list, setList] = useState([]);
+  const [list, setList] = useState(getLocalStorage());
+  const [editID, setEditID] = useState(null);
   const [alert, setAlert] = useState({ show: false, msg: "", type: "" });
   const [isEditing, setIsEditing] = useState(false);
 
@@ -13,8 +23,19 @@ function App() {
     e.preventDefault();
     if (!name) {
       showAlert(true, "please enter a value", "danger");
-      // setAlert({ show: true, msg: "add item", type: "success" });
     } else if (name && isEditing) {
+      setList(
+        list.map((item) => {
+          if (item.id === editID) {
+            return { ...list, name: name };
+          }
+          return item;
+        })
+      );
+      setEditID(false);
+      setName("");
+      setIsEditing(false);
+      showAlert(true, "content changed", "success");
     } else {
       const eachItem = { id: new Date().getTime().toString(), name: name };
       setList([...list, eachItem]);
@@ -26,6 +47,27 @@ function App() {
   const showAlert = (show = false, msg = "", type = "") => {
     setAlert({ show, msg, type });
   };
+
+  const clearItems = () => {
+    showAlert(true, "empty list", "danger");
+    setList([]);
+  };
+
+  const clearItem = (id) => {
+    showAlert(true, "item deleted", "danger");
+    setList(list.filter((item) => item.id !== id));
+  };
+
+  const manageEdit = (id) => {
+    const specificItem = list.find((item) => item.id === id);
+    setIsEditing(true);
+    setEditID(id);
+    setName(specificItem.name);
+  };
+
+  useEffect(() => {
+    localStorage.setItem("list", JSON.stringify(list));
+  }, [list]);
 
   return (
     <Fragment>
@@ -43,9 +85,17 @@ function App() {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <button type="submit">submit</button>
+          <button type="submit">{isEditing ? "EDIT" : "SUBMIT"}</button>
         </form>
-        {list.length > 0 && <List items={list} />}
+        {list.length > 0 && (
+          <List
+            items={list}
+            clearItem={clearItem}
+            // setIsEditing={setIsEditing}
+            manageEdit={manageEdit}
+          />
+        )}
+        {list.length >= 2 && <button onClick={clearItems}>Clear items</button>}
       </section>
     </Fragment>
   );
