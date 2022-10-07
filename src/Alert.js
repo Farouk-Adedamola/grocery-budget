@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
-import { AiFillDelete } from "react-icons/ai";
-import { FaEdit } from "react-icons/fa";
+import "./Alert.css";
 
 const Alert = ({ type, msg, setAlert, list }) => {
   useEffect(() => {

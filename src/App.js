@@ -71,32 +71,42 @@ function App() {
 
   return (
     <Fragment>
-      <div className="container">
-        <h1>Grocery bud</h1>
-        <div className="underline"></div>
-      </div>
-      <section className="section">
+      <div className="wrapper">
         {alert.show && <Alert {...alert} setAlert={showAlert} list={list} />}
-        <form onSubmit={submitHandler}>
-          <input
-            type="text"
-            name="name"
-            placeholder="add items"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <button type="submit">{isEditing ? "EDIT" : "SUBMIT"}</button>
-        </form>
-        {list.length > 0 && (
-          <List
-            items={list}
-            clearItem={clearItem}
-            // setIsEditing={setIsEditing}
-            manageEdit={manageEdit}
-          />
-        )}
-        {list.length >= 2 && <button onClick={clearItems}>Clear items</button>}
-      </section>
+        <div className="container">
+          <h1>Grocery bud</h1>
+          <div className="underline"></div>
+        </div>
+        <section>
+          <form onSubmit={submitHandler} className="form">
+            <input
+              type="text"
+              name="name"
+              className="input"
+              placeholder="add items"
+              value={name}
+              maxLength={12}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <button type="submit">{isEditing ? "Edit" : "Submit"}</button>
+          </form>
+          {list.length > 0 && (
+            <List
+              items={list}
+              clearItem={clearItem}
+              // setIsEditing={setIsEditing}
+              manageEdit={manageEdit}
+            />
+          )}
+          {list.length >= 2 && (
+            <div className="clear-container">
+              <button onClick={clearItems} className="clear-items">
+                Clear items
+              </button>
+            </div>
+          )}
+        </section>
+      </div>
     </Fragment>
   );
 }

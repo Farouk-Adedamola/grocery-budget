@@ -1,0 +1,16 @@
+.alert {
+  margin: 0 auto;
+  text-align: center;
+  border-radius: 5px;
+  font-size: small;
+}
+
+.alert-success {
+  background: #6be675;
+  color: #fff;
+}
+
+.alert-danger {
+  background: #e66b6b;
+  color: #fff;
+}
